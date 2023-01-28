@@ -68,7 +68,7 @@ public class BookingTest extends AuthTest {
         context.setAttribute("bookingid", bookingId);
     }
 
-    @Test(dependsOnMethods = {"createTokenHappyPath"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
+    @Test(dependsOnMethods = {"createBooking"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
     @Severity(SeverityLevel.CRITICAL)
     @Description("Returns a specific booking based upon the booking id provided")
     @Issue("")
@@ -82,7 +82,7 @@ public class BookingTest extends AuthTest {
                 .body(matchesJsonSchemaInClasspath("schemas/booking/BookingObjectDTO-schema.json"));
     }
 
-    @Test(dependsOnMethods = {"createTokenHappyPath"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
+    @Test(dependsOnMethods = {"createBooking"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
     @Severity(SeverityLevel.CRITICAL)
     @Description("Updates a current booking")
     @Parameters({"contentType", "accept"})
