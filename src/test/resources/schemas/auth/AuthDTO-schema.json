@@ -1,0 +1,18 @@
+{
+  "$id": "root",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "token": {
+      "type": "string",
+      "default": "2fc8baa79abda07",
+      "examples": [
+        "2fc8baa79abda07"
+      ]
+    }
+  },
+  "required": [
+    "token"
+  ],
+  "additionalProperties": false
+}

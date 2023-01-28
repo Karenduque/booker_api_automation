@@ -1,0 +1,21 @@
+{
+  "$id": "root",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "bookingid": {
+        "type": "integer",
+        "default": 831,
+        "examples": [
+          831
+        ]
+      }
+    },
+    "required": [
+      "bookingid"
+    ],
+    "additionalProperties": false
+  }
+}

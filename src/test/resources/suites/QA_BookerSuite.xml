@@ -1,0 +1,31 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="Booker- QA Karen Duque" verbose="1" configfailurepolicy="continue">
+    <!-- Default Groups for manual runs, you can use mvn params -Dgroups= -DexcludedGroups= in the cli command. -->
+    <groups>
+        <run>
+            <include name="SMOKE" />
+        </run>
+    </groups>
+
+    <parameter name="BaseURL" value="https://restful-booker.herokuapp.com" />
+    <parameter name="contentType" value="application/json" />
+    <parameter name="accept" value="application/json" />
+<!--
+    <test name="Auth Test" parallel="methods">
+        <parameter name="BaseURL" value="https://restful-booker.herokuapp.com" />
+        <parameter name="userName" value="admin" />
+        <parameter name="password" value="password123" />
+        <packages>
+            <package name="com.booker.testing.tests.auth.*"/>
+        </packages>
+    </test>
+-->
+    <test name="Booking Test" parallel="methods">
+        <parameter name="userName" value="admin" />
+        <parameter name="password" value="password123" />
+        <packages>
+            <package name="com.booker.testing.tests.booking.*"/>
+        </packages>
+    </test>
+ </suite>
