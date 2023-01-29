@@ -4,7 +4,9 @@ import com.booker.testing.model.Booking;
 import com.booker.testing.model.Bookingdates;
 import com.booker.testing.tests.auth.AuthTest;
 import com.booker.testing.utilities.commons.TestGroups;
+import com.booker.testing.utilities.commons.Utilities;
 import io.qameta.allure.*;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
 import org.testng.ITestContext;
@@ -23,7 +25,7 @@ public class BookingTest extends AuthTest {
     @Parameters({"BaseURL"})
     public BookingTest(String baseUrl) { super(baseUrl); }
 
-    @Test(groups = {TestGroups.SMOKE, TestGroups.BOOKING})
+    @Test(dependsOnMethods = {"createTokenHappyPath"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
     @Severity(SeverityLevel.CRITICAL)
     @Description("Returns the ids of all the bookings that exist within the API. Can take optional query strings to search and return a subset of booking ids")
     @Issue("")
@@ -68,6 +70,35 @@ public class BookingTest extends AuthTest {
         context.setAttribute("bookingid", bookingId);
     }
 
+    @Test(groups = {TestGroups.SMOKE, TestGroups.BOOKING})
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Creates a new booking in the API - Bad request")
+    @Parameters({"contentType"})
+    @Issue("")
+    public void createBookingBadRequest(String contentType, ITestContext context){
+        Gson gson = new Gson();
+        Booking booking = new Booking();
+        //booking.setFirstname("Jim");
+        //booking.setLastname("Brown");
+        booking.setTotalprice(111);
+        booking.setDepositpaid(true);
+        booking.setAdditionalneeds("Breakfast");
+        Bookingdates bookingdates = new Bookingdates();
+        bookingdates.setCheckin("2018-01-01");
+        bookingdates.setCheckout("2019-01-01");
+        booking.setBookingdates(bookingdates);
+
+        JsonObject bodyPayload = JsonParser.parseString(gson.toJson(booking)).getAsJsonObject();
+        Response response = given().spec(request)
+                .header("Content-Type", contentType)
+                .body(bodyPayload.toString())
+                .post(BOOKING_PATH);
+
+        response.then()
+                .assertThat()
+                .statusCode(HttpStatus.SC_BAD_REQUEST);
+    }
+
     @Test(dependsOnMethods = {"createBooking"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
     @Severity(SeverityLevel.CRITICAL)
     @Description("Returns a specific booking based upon the booking id provided")
@@ -80,6 +111,19 @@ public class BookingTest extends AuthTest {
                 .assertThat()
                 .statusCode(HttpStatus.SC_OK)
                 .body(matchesJsonSchemaInClasspath("schemas/booking/BookingObjectDTO-schema.json"));
+    }
+
+    @Test(dependsOnMethods = {"createTokenHappyPath"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Returns a specific booking based upon the booking id provided - Not Found")
+    @Issue("")
+    public void getBookingBadRequest(ITestContext context){
+        String bookingid = Utilities.getIdRandom();
+        Response response = given().spec(request)
+                .get(BOOKING_PATH+String.format("/%s", bookingid));
+        response.then()
+                .assertThat()
+                .statusCode(HttpStatus.SC_NOT_FOUND);
     }
 
     @Test(dependsOnMethods = {"createBooking"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
@@ -119,6 +163,42 @@ public class BookingTest extends AuthTest {
                 .body(matchesJsonSchemaInClasspath("schemas/booking/BookingObjectDTO-schema.json"));
     }
 
+    @Test(dependsOnMethods = {"createTokenHappyPath"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Updates a current booking - Bad Request")
+    @Parameters({"contentType", "accept"})
+    @Issue("")
+    public void updateBookingBadRequest(String contentType, String accept, ITestContext context){
+        String bookingid = Utilities.getIdRandom();
+        String token = context.getAttribute("token").toString();
+        String cookie= "token="+token;
+        String bearer = "bearer "+token;
+
+        Gson gson = new Gson();
+        Booking booking = new Booking();
+        booking.setFirstname("Jim");
+        booking.setLastname("Brown");
+        booking.setTotalprice(111);
+        booking.setDepositpaid(true);
+        booking.setAdditionalneeds("Breakfast");
+        Bookingdates bookingdates = new Bookingdates();
+        bookingdates.setCheckin("2018-01-01");
+        bookingdates.setCheckout("2019-01-01");
+        booking.setBookingdates(bookingdates);
+
+        JsonObject bodyPayload = JsonParser.parseString(gson.toJson(booking)).getAsJsonObject();
+        Response response = given().spec(request)
+                .header("Content-Type", contentType)
+                .header("Accept", accept)
+                .header("Cookie", cookie)
+                .header("Authorization", bearer)
+                .body(bodyPayload.toString())
+                .put(BOOKING_PATH+String.format("/%s", bookingid));
+
+        response.then().assertThat()
+                .statusCode(HttpStatus.SC_NOT_FOUND);
+    }
+
     @Test(dependsOnMethods = {"updateBooking"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
     @Severity(SeverityLevel.CRITICAL)
     @Description("Updates a current booking with a partial payload")
@@ -156,13 +236,48 @@ public class BookingTest extends AuthTest {
                 .body(matchesJsonSchemaInClasspath("schemas/booking/BookingObjectDTO-schema.json"));
     }
 
+    @Test(dependsOnMethods = {"createTokenHappyPath"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Updates a current booking with a partial payload - NotFound")
+    @Parameters({"contentType", "accept"})
+    @Issue("")
+    public void partialUpdateBookingBadRequest(String contentType, String accept, ITestContext context){
+        String bookingid = Utilities.getIdRandom();
+        String token = context.getAttribute("token").toString();
+        String cookie= "token="+token;
+        String bearer = "bearer "+token;
+
+        Gson gson = new Gson();
+        Booking booking = new Booking();
+        booking.setFirstname("Jim");
+        booking.setLastname("Brown");
+        booking.setTotalprice(111);
+        booking.setDepositpaid(true);
+        booking.setAdditionalneeds("Breakfast");
+        Bookingdates bookingdates = new Bookingdates();
+        bookingdates.setCheckin("2018-01-01");
+        bookingdates.setCheckout("2019-01-01");
+        booking.setBookingdates(bookingdates);
+
+        JsonObject bodyPayload = JsonParser.parseString(gson.toJson(booking)).getAsJsonObject();
+        Response response = given().spec(request)
+                .header("Content-Type", contentType)
+                .header("Accept", accept)
+                .header("Cookie", cookie)
+                .header("Authorization", bearer)
+                .body(bodyPayload.toString())
+                .put(BOOKING_PATH+String.format("/%s", bookingid));
+
+        response.then().assertThat()
+                .statusCode(HttpStatus.SC_NOT_FOUND);
+    }
+
     @Test(dependsOnMethods = {"partialUpdateBooking"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
     @Severity(SeverityLevel.CRITICAL)
     @Description("Returns the ids of all the bookings that exist within the API. Can take optional query strings to search and return a subset of booking ids")
     @Parameters({"contentType"})
     @Issue("")
     public void deleteBooking(String contentType, ITestContext context){
-
         String bookingid = context.getAttribute("bookingid").toString();
         String token = context.getAttribute("token").toString();
         String cookie= "token="+token;
@@ -175,5 +290,25 @@ public class BookingTest extends AuthTest {
                 .delete(BOOKING_PATH+String.format("/%s",bookingid));
         response.then().assertThat()
                 .statusCode(HttpStatus.SC_CREATED);
+    }
+
+    @Test(dependsOnMethods = {"createTokenHappyPath"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Returns the ids of all the bookings that exist within the API. Can take optional query strings to search and return a subset of booking ids - Not Found")
+    @Parameters({"contentType"})
+    @Issue("")
+    public void deleteBookingBadRequest(String contentType, ITestContext context){
+        String bookingid = Utilities.getIdRandom();
+        String token = context.getAttribute("token").toString();
+        String cookie= "token="+token;
+        String bearer = "bearer "+token;
+
+        Response response = given().spec(request)
+                .header("Content-Type", contentType)
+                .header("Cookie", cookie)
+                .header("Authorization", bearer)
+                .delete(BOOKING_PATH+String.format("/%s",bookingid));
+        response.then().assertThat()
+                .statusCode(HttpStatus.SC_NOT_FOUND);
     }
 }
