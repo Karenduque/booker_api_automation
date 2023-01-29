@@ -28,4 +28,10 @@
             <package name="com.booker.testing.tests.booking.*"/>
         </packages>
     </test>
+
+    <test name="Ping Test" parallel="methods">
+        <packages>
+            <package name="com.booker.testing.tests.ping.*"/>
+        </packages>
+    </test>
  </suite>

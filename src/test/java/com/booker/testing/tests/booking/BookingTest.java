@@ -6,7 +6,6 @@ import com.booker.testing.tests.auth.AuthTest;
 import com.booker.testing.utilities.commons.TestGroups;
 import com.booker.testing.utilities.commons.Utilities;
 import io.qameta.allure.*;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
 import org.testng.ITestContext;
@@ -75,7 +74,7 @@ public class BookingTest extends AuthTest {
     @Description("Creates a new booking in the API - Bad request")
     @Parameters({"contentType"})
     @Issue("")
-    public void createBookingBadRequest(String contentType, ITestContext context){
+    public void createBookingBadRequest(String contentType){
         Gson gson = new Gson();
         Booking booking = new Booking();
         //booking.setFirstname("Jim");
@@ -117,7 +116,7 @@ public class BookingTest extends AuthTest {
     @Severity(SeverityLevel.NORMAL)
     @Description("Returns a specific booking based upon the booking id provided - Not Found")
     @Issue("")
-    public void getBookingBadRequest(ITestContext context){
+    public void getBookingBadRequest(){
         String bookingid = Utilities.getIdRandom();
         Response response = given().spec(request)
                 .get(BOOKING_PATH+String.format("/%s", bookingid));

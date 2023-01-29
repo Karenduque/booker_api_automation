@@ -3,7 +3,7 @@ package com.booker.testing.utilities.commons;
 public class Utilities {
 
      public static String getIdRandom(){
-        String result = java.util.UUID.randomUUID().toString();
+        String result = (int)(Math.random()*100+1)+100000+"";
         return result;
     }
 }

@@ -5,6 +5,7 @@ public final class TestGroups {
 
     public static final String BOOKING = "BOOKING";
     public static final String SMOKE = "SMOKE";
+    public static final String PING = "PING";
 
     private TestGroups() { }
 }
