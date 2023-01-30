@@ -128,9 +128,9 @@ public class BookingTest extends AuthTest {
     @Test(dependsOnMethods = {"createBooking"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
     @Severity(SeverityLevel.CRITICAL)
     @Description("Updates a current booking")
-    @Parameters({"contentType", "accept"})
+    @Parameters({"contentType", "accept", "authorization"})
     @Issue("")
-    public void updateBooking(String contentType, String accept, ITestContext context){
+    public void updateBooking(String contentType, String accept, String authorization, ITestContext context){
         String bookingid = context.getAttribute("bookingid").toString();
         String token = context.getAttribute("token").toString();
         String cookie= "token="+token;
@@ -152,8 +152,8 @@ public class BookingTest extends AuthTest {
         Response response = given().spec(request)
                 .header("Content-Type", contentType)
                 .header("Accept", accept)
-                .header("Cookie", cookie)
-                .header("Authorization", bearer)
+                //.header("Cookie", cookie)
+                .header("Authorization", authorization)
                 .body(bodyPayload.toString())
                 .put(BOOKING_PATH+String.format("/%s", bookingid));
 
@@ -165,9 +165,9 @@ public class BookingTest extends AuthTest {
     @Test(dependsOnMethods = {"createTokenHappyPath"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
     @Severity(SeverityLevel.NORMAL)
     @Description("Updates a current booking - Bad Request")
-    @Parameters({"contentType", "accept"})
+    @Parameters({"contentType", "accept", "authorization"})
     @Issue("")
-    public void updateBookingBadRequest(String contentType, String accept, ITestContext context){
+    public void updateBookingBadRequest(String contentType, String accept, String authorization, ITestContext context){
         String bookingid = Utilities.getIdRandom();
         String token = context.getAttribute("token").toString();
         String cookie= "token="+token;
@@ -189,8 +189,8 @@ public class BookingTest extends AuthTest {
         Response response = given().spec(request)
                 .header("Content-Type", contentType)
                 .header("Accept", accept)
-                .header("Cookie", cookie)
-                .header("Authorization", bearer)
+                //.header("Cookie", cookie)
+                .header("Authorization", authorization)
                 .body(bodyPayload.toString())
                 .put(BOOKING_PATH+String.format("/%s", bookingid));
 
@@ -203,7 +203,7 @@ public class BookingTest extends AuthTest {
     @Description("Updates a current booking with a partial payload")
     @Parameters({"contentType", "accept"})
     @Issue("")
-    public void partialUpdateBooking(String contentType, String accept, ITestContext context){
+    public void partialUpdateBooking(String contentType, String accept, String authorization, ITestContext context){
         String bookingid = context.getAttribute("bookingid").toString();
         String token = context.getAttribute("token").toString();
         String cookie= "token="+token;
@@ -225,8 +225,8 @@ public class BookingTest extends AuthTest {
         Response response = given().spec(request)
                 .header("Content-Type", contentType)
                 .header("Accept", accept)
-                .header("Cookie", cookie)
-                .header("Authorization", bearer)
+                //.header("Cookie", cookie)
+                .header("Authorization", authorization)
                 .body(bodyPayload.toString())
                 .put(BOOKING_PATH+String.format("/%s", bookingid));
 
@@ -238,9 +238,9 @@ public class BookingTest extends AuthTest {
     @Test(dependsOnMethods = {"createTokenHappyPath"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
     @Severity(SeverityLevel.NORMAL)
     @Description("Updates a current booking with a partial payload - NotFound")
-    @Parameters({"contentType", "accept"})
+    @Parameters({"contentType", "accept", "authorization"})
     @Issue("")
-    public void partialUpdateBookingBadRequest(String contentType, String accept, ITestContext context){
+    public void partialUpdateBookingBadRequest(String contentType, String accept, String authorization, ITestContext context){
         String bookingid = Utilities.getIdRandom();
         String token = context.getAttribute("token").toString();
         String cookie= "token="+token;
@@ -262,8 +262,8 @@ public class BookingTest extends AuthTest {
         Response response = given().spec(request)
                 .header("Content-Type", contentType)
                 .header("Accept", accept)
-                .header("Cookie", cookie)
-                .header("Authorization", bearer)
+                //.header("Cookie", cookie)
+                .header("Authorization", authorization)
                 .body(bodyPayload.toString())
                 .put(BOOKING_PATH+String.format("/%s", bookingid));
 
@@ -274,9 +274,9 @@ public class BookingTest extends AuthTest {
     @Test(dependsOnMethods = {"partialUpdateBooking"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
     @Severity(SeverityLevel.CRITICAL)
     @Description("Returns the ids of all the bookings that exist within the API. Can take optional query strings to search and return a subset of booking ids")
-    @Parameters({"contentType"})
+    @Parameters({"contentType", "authorization"})
     @Issue("")
-    public void deleteBooking(String contentType, ITestContext context){
+    public void deleteBooking(String contentType, String authorization, ITestContext context){
         String bookingid = context.getAttribute("bookingid").toString();
         String token = context.getAttribute("token").toString();
         String cookie= "token="+token;
@@ -284,8 +284,8 @@ public class BookingTest extends AuthTest {
 
         Response response = given().spec(request)
                 .header("Content-Type", contentType)
-                .header("Cookie", cookie)
-                .header("Authorization", bearer)
+                //.header("Cookie", cookie)
+                .header("Authorization", authorization)
                 .delete(BOOKING_PATH+String.format("/%s",bookingid));
         response.then().assertThat()
                 .statusCode(HttpStatus.SC_CREATED);
@@ -294,9 +294,9 @@ public class BookingTest extends AuthTest {
     @Test(dependsOnMethods = {"createTokenHappyPath"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
     @Severity(SeverityLevel.NORMAL)
     @Description("Returns the ids of all the bookings that exist within the API. Can take optional query strings to search and return a subset of booking ids - Not Found")
-    @Parameters({"contentType"})
+    @Parameters({"contentType", "authorization"})
     @Issue("")
-    public void deleteBookingBadRequest(String contentType, ITestContext context){
+    public void deleteBookingBadRequest(String contentType, String authorization, ITestContext context){
         String bookingid = Utilities.getIdRandom();
         String token = context.getAttribute("token").toString();
         String cookie= "token="+token;
@@ -304,8 +304,8 @@ public class BookingTest extends AuthTest {
 
         Response response = given().spec(request)
                 .header("Content-Type", contentType)
-                .header("Cookie", cookie)
-                .header("Authorization", bearer)
+                //.header("Cookie", cookie)
+                .header("Authorization", authorization)
                 .delete(BOOKING_PATH+String.format("/%s",bookingid));
         response.then().assertThat()
                 .statusCode(HttpStatus.SC_NOT_FOUND);
