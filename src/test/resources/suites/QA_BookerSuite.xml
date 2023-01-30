@@ -13,7 +13,6 @@
     <parameter name="accept" value="application/json" />
     <parameter name="authorization" value="Basic YWRtaW46cGFzc3dvcmQxMjM=" />
 
-<!--
     <test name="Auth Test" parallel="methods">
         <parameter name="BaseURL" value="https://restful-booker.herokuapp.com" />
         <parameter name="userName" value="admin" />
@@ -22,7 +21,7 @@
             <package name="com.booker.testing.tests.auth.*"/>
         </packages>
     </test>
--->
+
     <test name="Booking Test" parallel="methods">
         <parameter name="userName" value="admin" />
         <parameter name="password" value="password123" />
