@@ -11,6 +11,8 @@
     <parameter name="BaseURL" value="https://restful-booker.herokuapp.com" />
     <parameter name="contentType" value="application/json" />
     <parameter name="accept" value="application/json" />
+    <parameter name="authorization" value="Basic YWRtaW46cGFzc3dvcmQxMjM=" />
+
 <!--
     <test name="Auth Test" parallel="methods">
         <parameter name="BaseURL" value="https://restful-booker.herokuapp.com" />
