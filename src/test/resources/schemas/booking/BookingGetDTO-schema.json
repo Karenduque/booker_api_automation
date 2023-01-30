@@ -1,0 +1,78 @@
+{
+  "$id": "root",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "firstname": {
+      "type": "string",
+      "default": "Josh",
+      "examples": [
+        "Josh"
+      ]
+    },
+    "lastname": {
+      "type": "string",
+      "default": "Allen",
+      "examples": [
+        "Allen"
+      ]
+    },
+    "totalprice": {
+      "type": "integer",
+      "default": 111,
+      "examples": [
+        111
+      ]
+    },
+    "depositpaid": {
+      "type": "boolean",
+      "default": true,
+      "examples": [
+        true,
+        false
+      ]
+    },
+    "bookingdates": {
+      "type": "object",
+      "properties": {
+        "checkin": {
+          "type": "string",
+          "default": "2018-01-01",
+          "examples": [
+            "2018-01-01"
+          ],
+          "format": "date"
+        },
+        "checkout": {
+          "type": "string",
+          "default": "2019-01-01",
+          "examples": [
+            "2019-01-01"
+          ],
+          "format": "date"
+        }
+      },
+      "required": [
+        "checkin",
+        "checkout"
+      ],
+      "additionalProperties": false
+    },
+    "additionalneeds": {
+      "type": "string",
+      "default": "super bowls",
+      "examples": [
+        "super bowls"
+      ]
+    }
+  },
+  "required": [
+    "firstname",
+    "lastname",
+    "totalprice",
+    "depositpaid",
+    "bookingdates",
+    "additionalneeds"
+  ],
+  "additionalProperties": false
+}
