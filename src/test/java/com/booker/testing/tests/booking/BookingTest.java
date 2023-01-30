@@ -1,5 +1,6 @@
 package com.booker.testing.tests.booking;
 
+import com.booker.testing.base.testsetup.AbstractBaseTest;
 import com.booker.testing.model.Booking;
 import com.booker.testing.model.Bookingdates;
 import com.booker.testing.tests.auth.AuthTest;
@@ -17,14 +18,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class BookingTest extends AuthTest {
+public class BookingTest extends AbstractBaseTest {
 
     private static final String BOOKING_PATH = "/booking";
 
     @Parameters({"BaseURL"})
     public BookingTest(String baseUrl) { super(baseUrl); }
 
-    @Test(dependsOnMethods = {"createTokenHappyPath"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
+    @Test(/*dependsOnMethods = {"createTokenHappyPath"},*/ groups = {TestGroups.SMOKE, TestGroups.BOOKING})
     @Severity(SeverityLevel.CRITICAL)
     @Description("Returns the ids of all the bookings that exist within the API. Can take optional query strings to search and return a subset of booking ids")
     @Issue("")
@@ -37,12 +38,12 @@ public class BookingTest extends AuthTest {
                 .body(matchesJsonSchemaInClasspath("schemas/booking/BookingDTO-schema.json"));
     }
 
-    @Test(dependsOnMethods = {"createTokenHappyPath"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
+    @Test(/*dependsOnMethods = {"createTokenHappyPath"},*/ groups = {TestGroups.SMOKE, TestGroups.BOOKING})
     @Severity(SeverityLevel.CRITICAL)
     @Description("Creates a new booking in the API")
-    @Parameters({"contentType"})
+    @Parameters({"contentType", "accept"})
     @Issue("")
-    public void createBooking(String contentType, ITestContext context){
+    public void createBooking(String contentType, String accept, ITestContext context){
         Gson gson = new Gson();
         Booking booking = new Booking();
         booking.setFirstname("Jim");
@@ -58,6 +59,7 @@ public class BookingTest extends AuthTest {
         JsonObject bodyPayload = JsonParser.parseString(gson.toJson(booking)).getAsJsonObject();
         Response response = given().spec(request)
                 .header("Content-Type", contentType)
+                .header("Accept", accept)
                 .body(bodyPayload.toString())
                 .post(BOOKING_PATH);
 
@@ -72,9 +74,9 @@ public class BookingTest extends AuthTest {
     @Test(groups = {TestGroups.SMOKE, TestGroups.BOOKING})
     @Severity(SeverityLevel.NORMAL)
     @Description("Creates a new booking in the API - Bad request")
-    @Parameters({"contentType"})
+    @Parameters({"contentType", "accept"})
     @Issue("")
-    public void createBookingBadRequest(String contentType){
+    public void createBookingBadRequest(String contentType, String accept){
         Gson gson = new Gson();
         Booking booking = new Booking();
         //booking.setFirstname("Jim");
@@ -90,6 +92,7 @@ public class BookingTest extends AuthTest {
         JsonObject bodyPayload = JsonParser.parseString(gson.toJson(booking)).getAsJsonObject();
         Response response = given().spec(request)
                 .header("Content-Type", contentType)
+                .header("Accept", accept)
                 .body(bodyPayload.toString())
                 .post(BOOKING_PATH);
 
@@ -101,24 +104,28 @@ public class BookingTest extends AuthTest {
     @Test(dependsOnMethods = {"createBooking"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
     @Severity(SeverityLevel.CRITICAL)
     @Description("Returns a specific booking based upon the booking id provided")
+    @Parameters({"accept"})
     @Issue("")
-    public void getBooking(ITestContext context){
+    public void getBooking(String accept, ITestContext context){
         String bookingid = context.getAttribute("bookingid").toString();
         Response response = given().spec(request)
+                .header("Accept", accept)
                 .get(BOOKING_PATH+String.format("/%s", bookingid));
         response.then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_OK)
-                .body(matchesJsonSchemaInClasspath("schemas/booking/BookingObjectDTO-schema.json"));
+                .body(matchesJsonSchemaInClasspath("schemas/booking/BookingGetDTO-schema.json"));
     }
 
-    @Test(dependsOnMethods = {"createTokenHappyPath"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
+    @Test(/*dependsOnMethods = {"createTokenHappyPath"},*/ groups = {TestGroups.SMOKE, TestGroups.BOOKING})
     @Severity(SeverityLevel.NORMAL)
     @Description("Returns a specific booking based upon the booking id provided - Not Found")
+    @Parameters({"accept"})
     @Issue("")
-    public void getBookingBadRequest(){
+    public void getBookingBadRequest(String accept){
         String bookingid = Utilities.getIdRandom();
         Response response = given().spec(request)
+                .header("Accept", accept)
                 .get(BOOKING_PATH+String.format("/%s", bookingid));
         response.then()
                 .assertThat()
@@ -132,9 +139,9 @@ public class BookingTest extends AuthTest {
     @Issue("")
     public void updateBooking(String contentType, String accept, String authorization, ITestContext context){
         String bookingid = context.getAttribute("bookingid").toString();
-        String token = context.getAttribute("token").toString();
-        String cookie= "token="+token;
-        String bearer = "bearer "+token;
+        //String token = context.getAttribute("token").toString();
+        //String cookie= "token="+token;
+        //String bearer = "bearer "+token;
 
         Gson gson = new Gson();
         Booking booking = new Booking();
@@ -159,19 +166,19 @@ public class BookingTest extends AuthTest {
 
         response.then().assertThat()
                 .statusCode(HttpStatus.SC_OK)
-                .body(matchesJsonSchemaInClasspath("schemas/booking/BookingObjectDTO-schema.json"));
+                .body(matchesJsonSchemaInClasspath("schemas/booking/BookingGetDTO-schema.json"));
     }
 
-    @Test(dependsOnMethods = {"createTokenHappyPath"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
+    @Test(/*dependsOnMethods = {"createTokenHappyPath"},*/ groups = {TestGroups.SMOKE, TestGroups.BOOKING})
     @Severity(SeverityLevel.NORMAL)
     @Description("Updates a current booking - Bad Request")
     @Parameters({"contentType", "accept", "authorization"})
     @Issue("")
     public void updateBookingBadRequest(String contentType, String accept, String authorization, ITestContext context){
         String bookingid = Utilities.getIdRandom();
-        String token = context.getAttribute("token").toString();
-        String cookie= "token="+token;
-        String bearer = "bearer "+token;
+        //String token = context.getAttribute("token").toString();
+        //String cookie= "token="+token;
+        //String bearer = "bearer "+token;
 
         Gson gson = new Gson();
         Booking booking = new Booking();
@@ -201,13 +208,13 @@ public class BookingTest extends AuthTest {
     @Test(dependsOnMethods = {"updateBooking"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
     @Severity(SeverityLevel.CRITICAL)
     @Description("Updates a current booking with a partial payload")
-    @Parameters({"contentType", "accept"})
+    @Parameters({"contentType", "accept","authorization"})
     @Issue("")
     public void partialUpdateBooking(String contentType, String accept, String authorization, ITestContext context){
         String bookingid = context.getAttribute("bookingid").toString();
-        String token = context.getAttribute("token").toString();
-        String cookie= "token="+token;
-        String bearer = "bearer "+token;
+        //String token = context.getAttribute("token").toString();
+        //String cookie= "token="+token;
+        //String bearer = "bearer "+token;
 
         Gson gson = new Gson();
         Booking booking = new Booking();
@@ -232,19 +239,19 @@ public class BookingTest extends AuthTest {
 
         response.then().assertThat()
                 .statusCode(HttpStatus.SC_OK)
-                .body(matchesJsonSchemaInClasspath("schemas/booking/BookingObjectDTO-schema.json"));
+                .body(matchesJsonSchemaInClasspath("schemas/booking/BookingGetDTO-schema.json"));
     }
 
-    @Test(dependsOnMethods = {"createTokenHappyPath"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
+    @Test(/*dependsOnMethods = {"createTokenHappyPath"},*/ groups = {TestGroups.SMOKE, TestGroups.BOOKING})
     @Severity(SeverityLevel.NORMAL)
     @Description("Updates a current booking with a partial payload - NotFound")
     @Parameters({"contentType", "accept", "authorization"})
     @Issue("")
     public void partialUpdateBookingBadRequest(String contentType, String accept, String authorization, ITestContext context){
         String bookingid = Utilities.getIdRandom();
-        String token = context.getAttribute("token").toString();
-        String cookie= "token="+token;
-        String bearer = "bearer "+token;
+        //String token = context.getAttribute("token").toString();
+        //String cookie= "token="+token;
+        //String bearer = "bearer "+token;
 
         Gson gson = new Gson();
         Booking booking = new Booking();
@@ -278,9 +285,9 @@ public class BookingTest extends AuthTest {
     @Issue("")
     public void deleteBooking(String contentType, String authorization, ITestContext context){
         String bookingid = context.getAttribute("bookingid").toString();
-        String token = context.getAttribute("token").toString();
-        String cookie= "token="+token;
-        String bearer = "bearer "+token;
+        //String token = context.getAttribute("token").toString();
+        //String cookie= "token="+token;
+        //String bearer = "bearer "+token;
 
         Response response = given().spec(request)
                 .header("Content-Type", contentType)
@@ -291,16 +298,16 @@ public class BookingTest extends AuthTest {
                 .statusCode(HttpStatus.SC_CREATED);
     }
 
-    @Test(dependsOnMethods = {"createTokenHappyPath"}, groups = {TestGroups.SMOKE, TestGroups.BOOKING})
+    @Test(/*dependsOnMethods = {"createTokenHappyPath"},*/ groups = {TestGroups.SMOKE, TestGroups.BOOKING})
     @Severity(SeverityLevel.NORMAL)
     @Description("Returns the ids of all the bookings that exist within the API. Can take optional query strings to search and return a subset of booking ids - Not Found")
     @Parameters({"contentType", "authorization"})
     @Issue("")
     public void deleteBookingBadRequest(String contentType, String authorization, ITestContext context){
         String bookingid = Utilities.getIdRandom();
-        String token = context.getAttribute("token").toString();
-        String cookie= "token="+token;
-        String bearer = "bearer "+token;
+        //String token = context.getAttribute("token").toString();
+        //String cookie= "token="+token;
+        //String bearer = "bearer "+token;
 
         Response response = given().spec(request)
                 .header("Content-Type", contentType)
