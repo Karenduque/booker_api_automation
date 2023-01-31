@@ -1,6 +1,4 @@
-# FinaMetrica Profiler API Testing Suite
-
-This framework will be used for the stage 2 of the development, focused on API, so QA team will be able to cover the testing process and automate it.
+# AUTOMATIZACIÓN DE PRUEBAS A SERVICIOS WEB RESTFUL - BOOKER API Testing Suite
 
 ## Getting Started
 
@@ -38,8 +36,4 @@ This command open the web browser and displays the current html report.
 
 ## About the Postman Collection
 
-This test suite has a manual Postman collection for reference, more information can be found [here](postman/README.md).
-
-## About the Performance Testing
-
-This test suite has a Jmeter performaance test scripts, more information can be found [here](performance/README.md).
+This test suite has a manual Postman collection for reference, more information can be found booker_api_automation/postman
