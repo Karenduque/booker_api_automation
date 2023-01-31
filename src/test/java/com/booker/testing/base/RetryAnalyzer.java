@@ -1,4 +1,4 @@
-package com.niikiis.NiikiisAPItesting.base;
+package com.booker.testing.base;
 
 import org.testng.IRetryAnalyzer;
 import org.testng.ITestResult;
